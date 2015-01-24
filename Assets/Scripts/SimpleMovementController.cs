@@ -7,8 +7,12 @@ public class SimpleMovementController : MonoBehaviour {
 
 	bool dead = false;
 
+	public Transform arms;
+
 	void Update () {
 		SkeletonAnimation s = this.GetComponent<SkeletonAnimation>();
+		SkeletonAnimation s2 = arms.GetComponent<SkeletonAnimation>();
+
 		if (!dead) {
 			if (Input.GetKey ("left")) {
 				transform.position = new Vector3(transform.position.x - speed * Time.deltaTime, transform.position.y, transform.position.z);
@@ -24,6 +28,7 @@ public class SimpleMovementController : MonoBehaviour {
 				s.state.SetAnimation(0, "walk", true);
 			} else if (Input.GetKey ("f")) {
 				s.state.SetAnimation(0, "death", false);
+				s2.state.SetAnimation(0, "death", false);
 				dead = true;
 			} else {
 				s.state.ClearTracks();
