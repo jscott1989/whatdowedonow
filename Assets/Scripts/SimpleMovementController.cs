@@ -7,6 +7,10 @@ public class SimpleMovementController : MonoBehaviour {
 	public Transform arms;
 
 	public LocatorController locator;
+	public LocatorController locator2;
+
+	public float locator1Amount;
+	public float locator2Amount;
 
 	void Update () {
 		SkeletonAnimation s = this.GetComponent<SkeletonAnimation>();
@@ -15,7 +19,7 @@ public class SimpleMovementController : MonoBehaviour {
 
 		bool moved = false;
 
-		cc.Move (new Vector3(locator.horizontalMovement * speed*Time.deltaTime,0,locator.verticalMovement * speed * Time.deltaTime));
+		cc.Move (new Vector3((locator.horizontalMovement * speed*Time.deltaTime * locator1Amount) + (locator2.horizontalMovement * speed*Time.deltaTime * locator2Amount),0,(locator.verticalMovement * speed * Time.deltaTime * locator1Amount)+(locator2.verticalMovement * speed * Time.deltaTime * locator2Amount)));
 
 		if (locator.horizontalMovement != 0 || locator.verticalMovement != 0) {
 			s.state.SetAnimation(0, "walk", true);
@@ -27,7 +31,6 @@ public class SimpleMovementController : MonoBehaviour {
 		} else {
 			transform.localScale = new Vector3(0.7f, transform.localScale.y, transform.localScale.z);
 		}
-
 	
 		if (!moved) {
 			s.state.ClearTracks();
