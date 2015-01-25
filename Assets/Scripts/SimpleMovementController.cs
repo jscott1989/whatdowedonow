@@ -12,28 +12,55 @@ public class SimpleMovementController : MonoBehaviour {
 	public float locator1Amount;
 	public float locator2Amount;
 
-	void Update () {
+	public Transform trenchcoat;
+
+	bool dead;
+
+	void Start() {
 		SkeletonAnimation s = this.GetComponent<SkeletonAnimation>();
-		SkeletonAnimation s2 = arms.GetComponent<SkeletonAnimation>();
-		CharacterController cc = this.GetComponent<CharacterController>();
+		s.state.SetAnimation(0, "walk", true);
+		s.state.ClearTracks();
+	}
 
-		bool moved = false;
+	void Update () {
+		if (!dead) {
+			SkeletonAnimation s = this.GetComponent<SkeletonAnimation>();
+			SkeletonAnimation s2 = arms.GetComponent<SkeletonAnimation>();
+			CharacterController cc = this.GetComponent<CharacterController>();
 
-		cc.Move (new Vector3((locator.horizontalMovement * speed*Time.deltaTime * locator1Amount) + (locator2.horizontalMovement * speed*Time.deltaTime * locator2Amount),0,(locator.verticalMovement * speed * Time.deltaTime * locator1Amount)+(locator2.verticalMovement * speed * Time.deltaTime * locator2Amount)));
+			bool moved = false;
 
-		if (locator.horizontalMovement != 0 || locator.verticalMovement != 0) {
-			s.state.SetAnimation(0, "walk", true);
-			moved = true;
+			cc.Move (new Vector3((locator.horizontalMovement * speed*Time.deltaTime * locator1Amount) + (locator2.horizontalMovement * speed*Time.deltaTime * locator2Amount),0,(locator.verticalMovement * speed * Time.deltaTime * locator1Amount)+(locator2.verticalMovement * speed * Time.deltaTime * locator2Amount)));
+
+			if (locator.horizontalMovement != 0 || locator.verticalMovement != 0) {
+				s.state.SetAnimation(0, "walk", true);
+				moved = true;
+			}
+
+			if (locator.horizontalMovement < 0) {
+				transform.localScale = new Vector3(-0.7f, transform.localScale.y, transform.localScale.z);
+			} else {
+				transform.localScale = new Vector3(0.7f, transform.localScale.y, transform.localScale.z);
+			}
+		
+			if (!moved) {
+				s.state.ClearTracks();
+			}
+
+			if (Mathf.Abs(locator.horizontalMovement) == 50 || Mathf.Abs (locator.verticalMovement) == 50) {
+				dead = true;
+
+				trenchcoat.transform.parent=null;
+				trenchcoat.transform.rigidbody.useGravity = true;
+				StartCoroutine( GoToGameOver() );
+			}
 		}
+	}
 
-		if (locator.horizontalMovement < 0) {
-			transform.localScale = new Vector3(-0.7f, transform.localScale.y, transform.localScale.z);
-		} else {
-			transform.localScale = new Vector3(0.7f, transform.localScale.y, transform.localScale.z);
-		}
-	
-		if (!moved) {
-			s.state.ClearTracks();
-		}
+	public IEnumerator GoToGameOver()
+	{
+		yield return new WaitForSeconds(1.5f);
+		PlayerPrefs.SetInt("score", GameObject.FindObjectOfType<Score>().score);
+		Application.LoadLevel (3);
 	}
 }

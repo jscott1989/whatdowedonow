@@ -6,6 +6,7 @@ public class CanBePickedUp : MonoBehaviour {
 
 	public Image WKDImage;
 	public Transform WKDBig;
+	public Transform GoRight;
 
 	bool gotWKD = false;
 	
@@ -13,9 +14,11 @@ public class CanBePickedUp : MonoBehaviour {
 		if (!gotWKD && transform.position.x > 42.8) {
 			WKDImage.enabled = true;
 			GameObject.Destroy (WKDBig.gameObject);
+			GameObject.Destroy (GoRight.gameObject);
 			gotWKD = true;
 		} else if (gotWKD && transform.position.x < -44) {
-			Debug.Log("WIN");
+			PlayerPrefs.SetInt("score", GameObject.FindObjectOfType<Score>().score);
+			Application.LoadLevel(2);
 		}
 	}
 }

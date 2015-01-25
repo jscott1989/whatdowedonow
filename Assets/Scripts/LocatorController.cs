@@ -64,9 +64,17 @@ public class LocatorController : MonoBehaviour {
 //
 //		horizontalMovement = transform.localPosition.x;
 //		verticalMovement = transform.localPosition.y;
+		float hChange = 0;
+		float vChange = 0;
+
 
 		if (invertOnOtherFlip) {
 			if (lastOtherMoreThan0 && influenceControl.horizontalMovement < 0 || !lastOtherMoreThan0 && influenceControl.horizontalMovement >= 0) {
+				if (horizontalMovement >= 0) {
+					hChange += 5;
+				} else {
+					hChange -= 5;
+				}
 				applyChange((-horizontalMovement)*2, 0);
 			}
 			if (influenceControl.horizontalMovement < 0) {
@@ -75,9 +83,6 @@ public class LocatorController : MonoBehaviour {
 				lastOtherMoreThan0 = true;
 			}
 		}
-
-		float hChange = 0;
-		float vChange = 0;
 
 		if (Input.GetKey(RIGHT)) {
 			hChange += 1;

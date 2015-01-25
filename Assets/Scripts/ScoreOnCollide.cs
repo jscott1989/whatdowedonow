@@ -8,6 +8,7 @@ public class ScoreOnCollide : MonoBehaviour {
 		if (!hasCollided && c.gameObject.name == "Floor") {
 			hasCollided = true;
 			GameObject.FindObjectOfType<Score>().score += 10;
+			FindObjectOfType<PlayGlassBreakSound>().play();
 		}
 	}
 }
