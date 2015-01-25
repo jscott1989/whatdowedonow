@@ -2,38 +2,58 @@
 using System.Collections;
 
 public class SimpleMovementController : MonoBehaviour {
-
-	static float speed = 1;
+	static float speed = 5;
 
 	bool dead = false;
+
+	bool movingRight = true;
 
 	public Transform arms;
 
 	void Update () {
 		SkeletonAnimation s = this.GetComponent<SkeletonAnimation>();
 		SkeletonAnimation s2 = arms.GetComponent<SkeletonAnimation>();
+		CharacterController cc = this.GetComponent<CharacterController>();
 
 		if (!dead) {
+			bool moved = false;
 			if (Input.GetKey ("left")) {
-				transform.position = new Vector3(transform.position.x - speed * Time.deltaTime, transform.position.y, transform.position.z);
+				cc.Move (new Vector3(-speed*Time.deltaTime,0,0));
 				s.state.SetAnimation(0, "walk", true);
-			} else if (Input.GetKey ("right")) {
-				transform.position = new Vector3(transform.position.x + speed * Time.deltaTime, transform.position.y, transform.position.z);
+				moved = true;
+
+				movingRight = false;
+
+				transform.localScale = new Vector3(-0.7f, transform.localScale.y, transform.localScale.z);
+			}
+			if (Input.GetKey ("right")) {
+				cc.Move (new Vector3(speed*Time.deltaTime,0,0));
 				s.state.SetAnimation(0, "walk", true);
-			} else if (Input.GetKey ("up")) {
-				transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + speed * Time.deltaTime);
+				moved = true;
+
+				movingRight = true;
+				transform.localScale = new Vector3(0.7f, transform.localScale.y, transform.localScale.z);
+			}
+			if (Input.GetKey ("up")) {
+				cc.Move (new Vector3(0,0,speed*Time.deltaTime));
 				s.state.SetAnimation(0, "walk", true);
-			} else if (Input.GetKey ("down")) {
-				transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - speed * Time.deltaTime);
+				moved = true;
+			}
+			if (Input.GetKey ("down")) {
+				cc.Move (new Vector3(0,0,-speed*Time.deltaTime));
 				s.state.SetAnimation(0, "walk", true);
-			} else if (Input.GetKey ("f")) {
+				moved = true;
+			}
+			if (Input.GetKey ("f")) {
 				s.state.SetAnimation(0, "death", false);
 				s2.state.SetAnimation(0, "death", false);
 				dead = true;
-			} else {
+				moved = true;
+			}
+
+			if (!moved) {
 				s.state.ClearTracks();
 			}
 		}
-
 	}
 }
